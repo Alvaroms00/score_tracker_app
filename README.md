@@ -1,16 +1,11 @@
-# score_tracker_app
+# Contador de puntuaciones
 
-A new Flutter project.
+Un proyecto de app movil para android desarrollado en flutter.
+Este proyecto se basa en un contador para llevar las puntuaciones de los juegos de cartas.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+![Screenshot_2024-08-21-12-22-11-66_19cb2035712ae45ba2d382c3757b83c2](https://github.com/user-attachments/assets/3a5798c4-34db-4b3c-a77b-d17d1c3a1d5f)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Screenshot_2024-08-21-12-22-39-18_19cb2035712ae45ba2d382c3757b83c2](https://github.com/user-attachments/assets/ec2ebe4b-fc5b-4fa1-a39f-c904638816a7)
