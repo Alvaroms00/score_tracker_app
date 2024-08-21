@@ -168,8 +168,8 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(
                 onPressed: addPlayer,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue[200],
-                  iconColor: Colors.white,
+                  backgroundColor: Colors.lightBlue,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: clearPlayersAndScores,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
-                  iconColor: Colors.white,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -228,8 +228,8 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(
                 onPressed: addAllScores,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  iconColor: Colors.white,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.lightGreen,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -240,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: clearScores,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
-                  iconColor: Colors.white,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
