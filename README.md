@@ -1,11 +1,26 @@
 # Contador de puntuaciones
 
-Un proyecto de app movil para android desarrollado en flutter.
-Este proyecto se basa en un contador para llevar las puntuaciones de los juegos de cartas.
+Una app móvil desarrollada en Flutter para llevar la puntuación de juegos de mesa y cartas. Diseño moderno basado en Material 3 con una paleta de colores suaves, y disponible para Android, iOS, Web, Windows, macOS y Linux.
 
-## Getting Started
+## Juegos disponibles
 
+- **Contador general**: añade jugadores y suma o resetea sus puntos libremente. Pensado para cualquier juego de cartas que se puntúe por rondas.
+- **Dardos**: añade los jugadores, sortea el orden de turno al azar y juega una partida de 301/501/701/901 con las reglas clásicas de cierre a doble. Incluye:
+  - Lanzamiento dardo a dardo (valor 1-20, bull, y multiplicador simple/doble/triple).
+  - Detección automática de turno anulado ("bust") y de victoria.
+  - Historial de turnos y marcador final con estadísticas por jugador (turnos, dardos, puntos, media por dardo).
+  - Partida guardada automáticamente: si cierras la app a mitad de partida, puedes continuarla al volver a abrirla.
 
-![Screenshot_2024-08-21-12-22-11-66_19cb2035712ae45ba2d382c3757b83c2](https://github.com/user-attachments/assets/3a5798c4-34db-4b3c-a77b-d17d1c3a1d5f)
+## Primeros pasos
 
-![Screenshot_2024-08-21-12-22-39-18_19cb2035712ae45ba2d382c3757b83c2](https://github.com/user-attachments/assets/ec2ebe4b-fc5b-4fa1-a39f-c904638816a7)
+Requiere el [SDK de Flutter](https://docs.flutter.dev/get-started/install) (^3.5.0).
+
+```bash
+flutter pub get      # instalar dependencias
+flutter run           # ejecutar en un dispositivo/emulador conectado
+flutter analyze       # análisis estático
+flutter test           # ejecutar tests
+flutter build apk     # generar el APK de Android (o build ios / build web, etc.)
+```
+
+Más detalles de arquitectura y convenciones del proyecto en [CLAUDE.md](CLAUDE.md).
