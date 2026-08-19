@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import 'screens/main_menu_screen.dart';
 
 void main() {
   runApp(const ScoreTrackerApp());
@@ -13,244 +12,106 @@ class ScoreTrackerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Contador de puntuaciones',
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          brightness: Brightness.light,
-          textTheme: const TextTheme(
-              bodyLarge: TextStyle(color: Colors.black),
-              bodyMedium: TextStyle(color: Colors.black))),
-      darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: Colors.black87,
-          textTheme: const TextTheme(
-            bodyLarge: TextStyle(color: Colors.white),
-            bodyMedium: TextStyle(color: Colors.white),
-          ),
-          inputDecorationTheme: const InputDecorationTheme(
-              labelStyle: TextStyle(color: Colors.white),
-              enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white)))),
+      theme: buildAppTheme(Brightness.light),
+      darkTheme: buildAppTheme(Brightness.dark),
       themeMode: ThemeMode.system,
-      home: const HomePage(),
+      home: const MainMenuScreen(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+/// Seed color for the app's soft, muted Material 3 palette.
+const Color _seedColor = Color(0xFF6D9DC5);
 
-  @override
-  _HomePageState createState() => _HomePageState();
-}
+ThemeData buildAppTheme(Brightness brightness) {
+  final colorScheme = ColorScheme.fromSeed(
+    seedColor: _seedColor,
+    brightness: brightness,
+  );
+  final radius = BorderRadius.circular(14);
 
-class _HomePageState extends State<HomePage> {
-  List<String> players = [];
-  Map<String, int> scores = {};
-  TextEditingController playerNameController = TextEditingController();
-  Map<String, TextEditingController> controllers = {};
-
-  @override
-  void initState() {
-    super.initState();
-    loadData();
-  }
-
-  void addPlayer() {
-    setState(() {
-      String newPlayer = playerNameController.text;
-      if (newPlayer.isNotEmpty) {
-        players.add(newPlayer);
-        scores[newPlayer] = 0;
-        controllers[newPlayer] = TextEditingController();
-        playerNameController.clear();
-        saveData();
-      }
-    });
-  }
-
-  void addScore(String player) {
-    setState(() {
-      String score = controllers[player]!.text;
-      if (score.isNotEmpty) {
-        int scoreValue = int.tryParse(score) ?? 0;
-        scores[player] = scores[player]! + scoreValue;
-        controllers[player]!.clear();
-        saveData();
-      }
-    });
-  }
-
-  void addAllScores() {
-    setState(() {
-      for (String player in players) {
-        String score = controllers[player]!.text;
-        if (score.isNotEmpty) {
-          int scoreValue = int.tryParse(score) ?? 0;
-          scores[player] = scores[player]! + scoreValue;
-          controllers[player]!.clear();
-        }
-      }
-      saveData();
-    });
-  }
-
-  void clearScores() {
-    setState(() {
-      scores.forEach((key, value) {
-        scores[key] = 0;
-      });
-      saveData();
-    });
-  }
-
-  void clearPlayersAndScores() {
-    setState(() {
-      players.clear();
-      scores.clear();
-      controllers.clear();
-      saveData();
-    });
-  }
-
-  Future<void> saveData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('players', jsonEncode(players));
-    prefs.setString('scores', jsonEncode(scores));
-  }
-
-  Future<void> loadData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? playersString = prefs.getString('players');
-    String? scoresString = prefs.getString('scores');
-
-    if (playersString != null && scoresString != null) {
-      setState(() {
-        players = List<String>.from(jsonDecode(playersString));
-        scores = Map<String, int>.from(jsonDecode(scoresString));
-        controllers = {
-          for (var player in players) player: TextEditingController()
-        };
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    playerNameController.dispose();
-    controllers.forEach((_, controller) => controller.dispose());
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Contador de puntuaciones'),
+  return ThemeData(
+    useMaterial3: true,
+    colorScheme: colorScheme,
+    scaffoldBackgroundColor: colorScheme.surface,
+    appBarTheme: AppBarTheme(
+      backgroundColor: colorScheme.surface,
+      foregroundColor: colorScheme.onSurface,
+      centerTitle: true,
+      elevation: 0,
+      scrolledUnderElevation: 1,
+      surfaceTintColor: colorScheme.surfaceTint,
+    ),
+    cardTheme: CardThemeData(
+      elevation: 0,
+      color: colorScheme.surfaceContainerHigh,
+      shape: RoundedRectangleBorder(borderRadius: radius),
+      margin: const EdgeInsets.symmetric(vertical: 4),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: colorScheme.surfaceContainerHighest,
+      border: OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide.none,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: playerNameController,
-              decoration: const InputDecoration(
-                labelText: 'Introduce el nombre del jugador',
-              ),
-              onSubmitted: (value) {
-                addPlayer();
-              },
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: addPlayer,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Añadir jugador'),
-              ),
-              ElevatedButton(
-                onPressed: clearPlayersAndScores,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Borrar todo'),
-              ),
-            ],
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: players.length,
-              itemBuilder: (context, index) {
-                String player = players[index];
-                return ListTile(
-                  title: Text('$player: ${scores[player]} puntos'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 50,
-                        child: TextField(
-                          controller: controllers[player],
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'Puntos',
-                          ),
-                          onSubmitted: (value) {
-                            addScore(player);
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () => addScore(player),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: addAllScores,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.lightGreen,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Añadir puntuación'),
-              ),
-              ElevatedButton(
-                onPressed: clearScores,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Borrar puntuación'),
-              ),
-            ],
-          ),
-        ],
+      enabledBorder: OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide.none,
       ),
-    );
-  }
+      focusedBorder: OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide(color: colorScheme.primary, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+        shape: RoundedRectangleBorder(borderRadius: radius),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+        shape: RoundedRectangleBorder(borderRadius: radius),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        side: BorderSide(color: colorScheme.outlineVariant),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: radius),
+      ),
+    ),
+    chipTheme: ChipThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      side: BorderSide.none,
+      backgroundColor: colorScheme.surfaceContainerHighest,
+      selectedColor: colorScheme.primaryContainer,
+      labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+      secondaryLabelStyle: TextStyle(color: colorScheme.onPrimaryContainer),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: SegmentedButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: radius),
+      ),
+    ),
+    listTileTheme: ListTileThemeData(
+      shape: RoundedRectangleBorder(borderRadius: radius),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    ),
+    dialogTheme: DialogThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+    ),
+    dividerTheme: DividerThemeData(color: colorScheme.outlineVariant),
+  );
 }
